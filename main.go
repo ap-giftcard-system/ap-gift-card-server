@@ -2,31 +2,46 @@ package main
 
 // @import
 import (
-  "log"
-  "net/http"
+	"ap-gift-card-server/routers"
+	"ap-gift-card-server/utils"
+	"os"
 
-  "github.com/gin-gonic/gin"
-  "github.com/joho/godotenv"
+	"github.com/gin-gonic/gin"
 )
+
+// @notice: global variables
+var (
+  server			*gin.Engine
+)
+
+// @dev Runs before main()
+func init() {
+  // load env variables
+	if (os.Getenv("GIN_MODE") != "release") {utils.LoadEnvVars()}
+  
+  // set up gin engine
+  server = gin.Default()
+
+  // Gin trust all proxies by default and it's not safe. Set trusted proxy to home router to to mitigate 
+  server.SetTrustedProxies([]string{os.Getenv("HOME_ROUTER")})
+
+}
 
 // @dev Root function
 func main() {
-  // Loads environment variables
-  err := godotenv.Load()
-  if err != nil {
-    log.Fatal("Error loading .env file")
-  }
+  // Catch all unallowed HTTP methods sent to the server
+	server.HandleMethodNotAllowed = true
 
-  // Init gin engine
-  r := gin.Default()
+  // init basePath
+	giftsBasePath := server.Group("/v1/ap/gifts/")
 
-  // HTTP Get
-  r.GET("/ping", func(c *gin.Context) {
-    c.JSON(http.StatusOK, gin.H{
-      "message": "pong",
-    })
-  })
+  // init Handler
+  routers.ApRouter(giftsBasePath)
 
-  // run gin engine
-  r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+  // run gin server engine
+	if (os.Getenv("GIN_MODE") != "release") {
+		server.Run(os.Getenv("LOCAL_DEV_PORT"))
+	} else {
+		server.Run(":"+os.Getenv("PRODUCTION_PORT"))
+	}
 }
