@@ -2,16 +2,19 @@ package main
 
 // @import
 import (
+	"ap-gift-card-server/db"
 	"ap-gift-card-server/routers"
 	"ap-gift-card-server/utils"
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 // @notice: global variables
 var (
   server			*gin.Engine
+  postgresClient		*gorm.DB
 )
 
 // @dev Runs before main()
@@ -25,6 +28,8 @@ func init() {
   // Gin trust all proxies by default and it's not safe. Set trusted proxy to home router to to mitigate 
   server.SetTrustedProxies([]string{os.Getenv("HOME_ROUTER")})
 
+  // init postgres client
+  postgresClient = db.EstablishPostgresClient()
 }
 
 // @dev Root function
