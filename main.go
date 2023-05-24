@@ -54,6 +54,9 @@ func init() {
 
 // @dev Root function
 func main() {
+	// setup CORS
+	server.Use(utils.SetupCorsConfig())
+
   	// Catch all unallowed HTTP methods sent to the server
 	server.HandleMethodNotAllowed = true
 
