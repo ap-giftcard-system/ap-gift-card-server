@@ -100,28 +100,10 @@ func (gdi *ApGiftDaoImpl) UpdateApGiftHolder(giftHolder *models.ApGiftHolder) (e
 	}
 }
 
-// @dev Get a list of all ApGiftHolders in internal database
+
+// @dev Get ApGiftHolders by params
 // 
-// @return *[]models.ApGiftHolder
-// 
-// @return error
-func (gdi *ApGiftDaoImpl) GetAllApGiftHolders() (*[]models.ApGiftHolder, error) {
-	// prepare apGiftHolders placeholder
-	apGiftHolders := &[]models.ApGiftHolder{}
-
-	// find all holders in internal database
-	cursor, err := gdi.mongoCollection.Find(gdi.ctx, bson.D{})
-	if err != nil {
-		return nil, err
-	}
-
-	// decode curosr into declared placeholder
-	err = cursor.All(gdi.ctx, apGiftHolders)
-
-	return apGiftHolders, err
-}
-
-// @dev Get a specific ApGiftHolder by params
+// @notice if all params are empty (i.e. no params provided), retrives all Gift Holders
 // 
 // @param barCode string
 // 	
@@ -133,7 +115,7 @@ func (gdi *ApGiftDaoImpl) GetAllApGiftHolders() (*[]models.ApGiftHolder, error) 
 // 
 // @return *model.ApGiftHolder
 // 
-// @return *model.ApGiftHolder
+// @return *[]model.ApGiftHolder
 // 
 // @return error
 func (gdi *ApGiftDaoImpl) GetApGiftHolder(barCode, holderName, holderPhone, holderEmail string) (*models.ApGiftHolder, error) {

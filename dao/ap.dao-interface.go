@@ -19,14 +19,9 @@ type ApGiftDao interface {
 	// @return error
 	UpdateApGiftHolder(giftHolder *models.ApGiftHolder) (error)
 
-	// @notice Get a list of all ApGiftHolders in internal database
+	// @notice Get a list of ApGiftHolders by params
 	// 
-	// @return *[]models.ApGiftHolder
-	// 
-	// @return error
-	GetAllApGiftHolders() (*[]models.ApGiftHolder, error)
-
-	// @notice Get a specific ApGiftHolder by params
+	// @notice if all params are empty (i.e. no params provided), retrives all Gift Holders
 	// 
 	// @param barCode string
 	// 
@@ -36,10 +31,10 @@ type ApGiftDao interface {
 	// 
 	// @param holderEmail string
 	// 
-	// @return *model.ApGiftHolder
+	// @return *[]model.ApGiftHolder
 	// 
 	// @return error
-	GetApGiftHolder(barCode, holderName, holderPhone, holderEmail string) (*models.ApGiftHolder, error)
+	GetApGiftHolders(barCode, holderName, holderPhone, holderEmail string) (*[]models.ApGiftHolder, error)
 
 	// @notice Remove a specific ApGiftHolder
 	// 
