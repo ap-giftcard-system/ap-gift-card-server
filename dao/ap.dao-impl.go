@@ -55,44 +55,19 @@ func (gdi *ApGiftDaoImpl) GetAllApGiftHolders() (*[]models.ApGiftHolder, error) 
 // @dev Get a specific ApGiftHolder by `BarCode`
 // 
 // @param barCode string
-// 
-// @return *model.ApGiftHolder
-// 
-// @return error
-func (gdi *ApGiftDaoImpl) GetApGiftHolderByBarCode(barCode string) (*models.ApGiftHolder, error) {
-	return nil, nil
-}
-
-// @dev Get a specific ApGiftHolder by `HolderName`. The return object is an array as many records can have same name
-// 
+// 	
 // @param holderName string
 // 
-// @return *[]model.ApGiftHolder
-// 
-// @return error
-func (gdi *ApGiftDaoImpl) GetApGiftHolderByHolderName(holderName string) (*[]models.ApGiftHolder, error) {
-	return nil, nil
-}
-
-// @dev Get a specific ApGiftHolder by `HolderPhone`
-// 
 // @param holderPhone string
-// 
-// @return *model.ApGiftHolder
-// 
-// @return error
-func (gdi *ApGiftDaoImpl) GetApGiftHolderByHolderPhone(holderPhone string) (*models.ApGiftHolder, error) {
-	return nil, nil
-}
-
-// @dev Get a specific ApGiftHolder by `HolderEmail`
 // 
 // @param holderEmail string
 // 
 // @return *model.ApGiftHolder
 // 
+// @return *model.ApGiftHolder
+// 
 // @return error
-func (gdi *ApGiftDaoImpl) GetApGiftHolderByHolderEmail(holderEmail string) (*models.ApGiftHolder, error) {
+func (gdi *ApGiftDaoImpl) GetApGiftHolder(barCode, holderName, holderPhone, holderEmail string) (*models.ApGiftHolder, error) {
 	return nil, nil
 }
 

@@ -30,42 +30,21 @@ type ApGiftDao interface {
 	// @return error
 	GetAllApGiftHolders() (*[]models.ApGiftHolder, error)
 
-	// @notice Get a specific ApGiftHolder by `BarCode`
+	// @notice Get a specific ApGiftHolder by params
 	// 
 	// @param barCode string
 	// 
-	// @return *model.ApGiftHolder
-	// 
-	// @return error
-	GetApGiftHolderByBarCode(barCode string) (*models.ApGiftHolder, error)
-
-	// @notice Get a specific ApGiftHolder by `HolderName`. The return object is an array as many records can have same name
-	// 
 	// @param holderName string
 	// 
-	// @return *[]model.ApGiftHolder
-	// 
-	// @return error
-	GetApGiftHolderByHolderName(holderName string) (*[]models.ApGiftHolder, error)
-
-	// @notice Get a specific ApGiftHolder by `HolderPhone`
-	// 
 	// @param holderPhone string
-	// 
-	// @return *model.ApGiftHolder
-	// 
-	// @return error
-	GetApGiftHolderByHolderPhone(holderPhone string) (*models.ApGiftHolder, error)
-
-	// @notice Get a specific ApGiftHolder by `HolderEmail`
 	// 
 	// @param holderEmail string
 	// 
 	// @return *model.ApGiftHolder
 	// 
 	// @return error
-	GetApGiftHolderByHolderEmail(holderEmail string) (*models.ApGiftHolder, error)
-	
+	GetApGiftHolder(barCode, holderName, holderPhone, holderEmail string) (*models.ApGiftHolder, error)
+
 	// @notice Remove a specific ApGiftHolder by `BarCode`
 	// 
 	// @param barCode string
