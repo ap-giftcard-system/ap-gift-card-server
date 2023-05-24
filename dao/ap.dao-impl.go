@@ -10,11 +10,11 @@ import (
 // @notice Root struct for other methods in dao-impl
 type ApGiftDaoImpl struct {
 	ctx		context.Context
-	mongoCollection 	*mongo.Client
+	mongoCollection 	*mongo.Collection
 }
 
 // @dev GiftDaoConstructor
-func ApGiftDaoConstructor(ctx context.Context, mongoClient *mongo.Client) ApGiftDao {
+func ApGiftDaoConstructor(ctx context.Context, mongoClient *mongo.Collection) ApGiftDao {
 	return &ApGiftDaoImpl{
 		ctx: ctx,
 		mongoCollection: mongoClient,
