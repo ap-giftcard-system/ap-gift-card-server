@@ -2,6 +2,8 @@ package main
 
 // @import
 import (
+	"ap-gift-card-server/controllers"
+	"ap-gift-card-server/dao"
 	"ap-gift-card-server/db"
 	"ap-gift-card-server/routers"
 	"ap-gift-card-server/utils"
@@ -17,6 +19,7 @@ var (
 	server			*gin.Engine
 	ctx			context.Context
 	mongoClient		*mongo.Client
+	agr 		*routers.ApGiftRouter
 )
 
 // @dev Runs before main()
@@ -36,6 +39,17 @@ func init() {
 	// init mongo client
 	mongoClient = db.EstablishMongoClient(ctx)
 
+	// get ap-gift-holders collection
+	apGiftCollection := db.GetMongoCollection(mongoClient, "ap-gift-holders")
+
+	// init apGiftDao
+	agd := dao.ApGiftDaoConstructor(ctx, apGiftCollection)
+
+	// init apGiftController
+	agc := controllers.ApGiftControllerContructor(&agd)
+
+	// init apGiftRouter
+	agr = routers.ApGiftRouterConstructor(agc)
 }
 
 // @dev Root function
@@ -50,7 +64,7 @@ func main() {
 	apGiftBasePath := server.Group("/v1/ap/gift/holder")
 
 	// init Handler
-	routers.ApRouter(apGiftBasePath)
+	agr.ApRouter(apGiftBasePath)
 
 	// run gin server engine
 	if (os.Getenv("GIN_MODE") != "release") {
