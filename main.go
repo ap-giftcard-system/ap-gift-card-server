@@ -47,10 +47,10 @@ func main() {
 	defer func() {if err := mongoClient.Disconnect(ctx); err != nil {panic(err)}}()
 
   	// init basePath
-	giftsBasePath := server.Group("/v1/ap/gifts/")
+	apGiftBasePath := server.Group("/v1/ap/gifts/holder")
 
 	// init Handler
-	routers.ApRouter(giftsBasePath)
+	routers.ApRouter(apGiftBasePath)
 
 	// run gin server engine
 	if (os.Getenv("GIN_MODE") != "release") {
