@@ -132,13 +132,24 @@ func (agc *ApGiftController) GetApGiftHolder(gc *gin.Context) {
 	gc.JSON(200, gin.H{"error": nil, "apGiftHolder": apGiftHolder})
 }
 
-// @route `DELETE/delete?holder-id=`
+// @route `DELETE/delete?holderId=`
 // 
 // @dev Remove a specific ApGiftHolder
 // 
 // @param gc *gin.Context
 func (agc *ApGiftController) DeleteApGiftHolder(gc *gin.Context) {
+	// retrieve param from query
+	holderId := gc.Query("holderId")
+
+	// invoke dao.DeleteApGiftHolder
+	deleteCount, err := agc.ApGiftDao.DeleteApGiftHolder(holderId)
+	if err != nil {
+		gc.AbortWithStatusJSON(500, gin.H{"error": gin.H{
+			"key": "!INTERNAL_SERVER",
+			"msg": err.Error(),
+		}})
+	}
 
 	// return 200 OK to client
-	gc.JSON(200, "true")
+	gc.JSON(200, gin.H{"error": nil, "delete_count": deleteCount})
 }

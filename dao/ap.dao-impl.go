@@ -151,9 +151,17 @@ func (gdi *ApGiftDaoImpl) GetApGiftHolders(barCode, holderName, holderPhone, hol
 
 // @dev Remove a specific ApGiftHolder
 // 
-// @param holderID string
+// @param holderId string
+// 
+// @return int64 - delete document counts
 // 
 // @return error
-func (gdi *ApGiftDaoImpl) DeleteApHolder(holderID string) (error) {
-	return nil
+func (gdi *ApGiftDaoImpl) DeleteApGiftHolder(holderId string) (int64, error) {
+	// prepare filter
+	filter := bson.D{{Key: "_id", Value: holderId}}
+
+	// remove document matching filter
+	dbRes, err := gdi.mongoCollection.DeleteOne(gdi.ctx, filter)
+
+	return dbRes.DeletedCount, err
 }

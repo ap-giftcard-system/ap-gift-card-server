@@ -38,9 +38,11 @@ type ApGiftDao interface {
 
 	// @notice Remove a specific ApGiftHolder
 	// 
-	// @param holderID string
+	// @param holderId string
+	// 
+	// @return int64 - delete document counts
 	// 
 	// @return error
-	DeleteApHolder(holderID string) (error)
+	DeleteApGiftHolder(holderId string) (int64, error)
 
 }
