@@ -47,7 +47,7 @@ func main() {
 	defer func() {if err := mongoClient.Disconnect(ctx); err != nil {panic(err)}}()
 
   	// init basePath
-	apGiftBasePath := server.Group("/v1/ap/gifts/holder")
+	apGiftBasePath := server.Group("/v1/ap/gift/holder")
 
 	// init Handler
 	routers.ApRouter(apGiftBasePath)
