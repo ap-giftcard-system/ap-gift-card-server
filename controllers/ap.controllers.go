@@ -42,8 +42,8 @@ func (agc *ApGiftController) RegisterNewApGiftHoder(gc *gin.Context) {
 		}}); return;
 	}
 
-	// sanitize struct
-	if err := utils.SanitizeStruct(gc, validate, param); err != nil {return;}
+	// sanitize request's body
+	if err := common.SanitizeStruct(gc, validate, param); err != nil {return;}
 
 	// invoke dao.RegisterNewApGiftHoder
 	if err := agc.ApGiftDao.RegisterNewApGiftHoder(param); err != nil {
