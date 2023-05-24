@@ -12,7 +12,7 @@ type ApGiftDao interface {
 	// @return bool
 	// 
 	// @return error
-	CreateApGiftHolder(giftHolder *models.ApGiftHolder) (bool, error)
+	RegisterNewApGiftHoder(giftHolder *models.ApGiftHolder) (bool, error)
 
 	// @notice Update an existed ApGiftHolder in internal database
 	// 
@@ -45,13 +45,13 @@ type ApGiftDao interface {
 	// @return error
 	GetApGiftHolder(barCode, holderName, holderPhone, holderEmail string) (*models.ApGiftHolder, error)
 
-	// @notice Remove a specific ApGiftHolder by `BarCode`
+	// @notice Remove a specific ApGiftHolder
 	// 
-	// @param barCode string
+	// @param holderID string
 	// 
 	// @return bool
 	// 
 	// @return error
-	DeleteApHolderByBarCode(barCode string) (bool, error)
+	DeleteApHolder(holderID string) (bool, error)
 
 }
