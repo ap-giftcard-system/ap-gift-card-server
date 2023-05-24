@@ -1,9 +1,9 @@
 package controllers
 
 import (
+	"ap-gift-card-server/common"
 	"ap-gift-card-server/dao"
 	"ap-gift-card-server/models"
-	"ap-gift-card-server/utils"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -47,7 +47,7 @@ func (agc *ApGiftController) RegisterNewApGiftHoder(gc *gin.Context) {
 
 	// invoke dao.RegisterNewApGiftHoder
 	if err := agc.ApGiftDao.RegisterNewApGiftHoder(param); err != nil {
-		// @logic abort request with a conflict status if Gift Holder already exists
+		// @logic abort request with a 409 if Gift Holder already exists
 		if strings.EqualFold(err.Error(), "ErrDocumentConflict") {
 			gc.AbortWithStatusJSON(409, gin.H{"error": gin.H{
 				"key": "!DOCUMENT_CONFLICT",
@@ -72,7 +72,38 @@ func (agc *ApGiftController) RegisterNewApGiftHoder(gc *gin.Context) {
 // 
 // @param gc *gin.Context
 func (agc *ApGiftController) UpdateApGiftHolder(gc *gin.Context) {
-	gc.JSON(200, "true")
+	// prepare `param` placeholder
+	param := &models.ApGiftHolder{}
+
+	// bind json post data to `param`
+	if err := gc.ShouldBindJSON(param); err != nil {
+		gc.AbortWithStatusJSON(400, gin.H{"error": gin.H{
+			"key": "!BAD_REQUEST",
+			"msg": err.Error(),
+		}}); return;
+	}
+
+	// sanitize request's body
+	if err := common.SanitizeStruct(gc, validate, param); err != nil {return;}
+
+	// invoke dao.UpdateApGiftHolder
+	if err := agc.ApGiftDao.UpdateApGiftHolder(param); err != nil {
+		// @logic abort request with a 404 if Gift Holder does not exist
+		if strings.EqualFold(err.Error(), "ErrNoDocuments") {
+			gc.AbortWithStatusJSON(404, gin.H{"error": gin.H{
+				"key": "!DOCUMENT_NOT_FOUND",
+				"msg": "No document found in result",
+			}}); return;
+		} else {
+			// @logic abort request with a 500 if there's a unknown error from internal database
+			gc.AbortWithStatusJSON(500, gin.H{"error": gin.H{
+				"key": "!INTERNAL_SERVER",
+				"msg": err.Error(),
+			}}); return;
+		}
+	}
+
+	gc.JSON(200, gin.H{"error": nil})
 }
 
 // @route `GET/all`
