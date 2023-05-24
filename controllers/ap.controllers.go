@@ -3,6 +3,7 @@ package controllers
 import (
 	"ap-gift-card-server/dao"
 	"ap-gift-card-server/models"
+	"ap-gift-card-server/utils"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -41,21 +42,8 @@ func (agc *ApGiftController) RegisterNewApGiftHoder(gc *gin.Context) {
 		}}); return;
 	}
 
-	// validate struct
-	if err := validate.Struct(param); err != nil {
-		gc.AbortWithStatusJSON(400, gin.H{"error": gin.H{
-			"key": "!BAD_REQUEST",
-			"msg": err.Error(),
-		}}); return;
-	}
-
-	// @logic post data must have either HolderPhone or HolderEmail
-	if strings.EqualFold(param.HolderEmail, "") && strings.EqualFold(param.HolderPhone, "") {
-		gc.AbortWithStatusJSON(400, gin.H{"error": gin.H{
-			"key": "!MISSING_CONTACT", 
-			"msg": "Gift Holder must provide at least either email or phone information for contacting purposes",
-		}}); return;
-	}
+	// sanitize struct
+	if err := utils.SanitizeStruct(gc, validate, param); err != nil {return;}
 
 	// invoke dao.RegisterNewApGiftHoder
 	if err := agc.ApGiftDao.RegisterNewApGiftHoder(param); err != nil {
