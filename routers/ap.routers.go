@@ -21,7 +21,7 @@ func ApGiftRouterConstructor(apGiftController *controllers.ApGiftController) *Ap
 // @dev Declares list of endpoints
 func (agr *ApGiftRouter) ApRouter (rg *gin.RouterGroup) {
 	rg.POST("/register", agr.ApGiftController.RegisterNewApGiftHoder)
-	rg.PUT("/update", agr.ApGiftController.UpdateApGiftHolder)
+	rg.PATCH("/update", agr.ApGiftController.UpdateApGiftHolder)
 	rg.GET("/all", agr.ApGiftController.GetAllApGiftHolders)
 	rg.GET("/single", agr.ApGiftController.GetApGiftHolder)
 	rg.DELETE("/delete", agr.ApGiftController.DeleteApGiftHolder)
