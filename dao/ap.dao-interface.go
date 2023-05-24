@@ -9,19 +9,15 @@ type ApGiftDao interface {
 	// 
 	// @param giftHolder *models.ApGiftHolder
 	// 
-	// @return bool
-	// 
 	// @return error
-	RegisterNewApGiftHoder(giftHolder *models.ApGiftHolder) (bool, error)
+	RegisterNewApGiftHoder(giftHolder *models.ApGiftHolder) (error)
 
 	// @notice Update an existed ApGiftHolder in internal database
 	// 
 	// @param giftHolder *models.ApGiftHolder
 	// 
-	// @return bool
-	// 
 	// @return error
-	UpdateApGiftHolder(giftHolder *models.ApGiftHolder) (bool, error)
+	UpdateApGiftHolder(giftHolder *models.ApGiftHolder) (error)
 
 	// @notice Get a list of all ApGiftHolders in internal database
 	// 
@@ -49,9 +45,7 @@ type ApGiftDao interface {
 	// 
 	// @param holderID string
 	// 
-	// @return bool
-	// 
 	// @return error
-	DeleteApHolder(holderID string) (bool, error)
+	DeleteApHolder(holderID string) (error)
 
 }

@@ -25,22 +25,18 @@ func ApGiftDaoConstructor(ctx context.Context, mongoClient *mongo.Collection) Ap
 // 
 // @param giftHolder *models.ApGiftHolder
 // 
-// @return bool
-// 
 // @return error
-func (gdi *ApGiftDaoImpl) RegisterNewApGiftHoder(giftHolder *models.ApGiftHolder) (bool, error) {
-	return false, nil
+func (gdi *ApGiftDaoImpl) RegisterNewApGiftHoder(giftHolder *models.ApGiftHolder) (error) {
+	return nil
 }
 
 // @dev Update an existed ApGiftHolder in internal database
 // 
 // @param giftHolder *models.ApGiftHolder
 // 
-// @return bool
-// 
 // @return error
-func (gdi *ApGiftDaoImpl) UpdateApGiftHolder(giftHolder *models.ApGiftHolder) (bool, error) {
-	return false, nil
+func (gdi *ApGiftDaoImpl) UpdateApGiftHolder(giftHolder *models.ApGiftHolder) (error) {
+	return nil
 }
 
 // @dev Get a list of all ApGiftHolders in internal database
@@ -75,9 +71,7 @@ func (gdi *ApGiftDaoImpl) GetApGiftHolder(barCode, holderName, holderPhone, hold
 // 
 // @param holderID string
 // 
-// @return bool
-// 
 // @return error
-func (gdi *ApGiftDaoImpl) DeleteApHolder(holderID string) (bool, error) {
-	return false, nil
+func (gdi *ApGiftDaoImpl) DeleteApHolder(holderID string) (error) {
+	return nil
 }
