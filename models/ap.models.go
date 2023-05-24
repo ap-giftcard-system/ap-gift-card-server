@@ -4,6 +4,7 @@ import "time"
 
 // @notice struct for AP Gift Holder
 type ApGiftHolder struct {
+	GiftHolderID string		`json:"giftHolderId" bson:"_id" validate:"omitempty"`
 	BarCode string 			`json:"barCode" bson:"bar_code" validate:"required"`
 	HolderName string 		`json:"holderName" bson:"holder_name" validate:"required"`
 	HolderPhone string		`json:"holderPhone" bson:"holder_phone" validate:"omitempty,e164"` // e164Pattern = `^\+\d{1,15}$`

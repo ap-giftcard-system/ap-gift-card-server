@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -42,6 +43,9 @@ func (gdi *ApGiftDaoImpl) RegisterNewApGiftHoder(giftHolder *models.ApGiftHolder
 	if dbRes.Err() == nil {
 		return errors.New("ErrDocumentConflict")
 	} else if dbRes.Err() == mongo.ErrNoDocuments {
+		// prepare uuid for giftHolder.GiftHolderID
+		giftHolder.GiftHolderID = primitive.NewObjectID().Hex()
+
 		// prepare timing for the `giftHolder` document
 		giftHolder.CreatedAt = time.Now() // UTC
 		giftHolder.UpdatedAt = time.Now() // UTC
