@@ -60,10 +60,10 @@ func (agc *ApGiftController) RegisterNewApGiftHoder(gc *gin.Context) {
 	// invoke dao.RegisterNewApGiftHoder
 	if err := agc.ApGiftDao.RegisterNewApGiftHoder(param); err != nil {
 		// @logic abort request with a conflict status if Gift Holder already exists
-		if strings.EqualFold(err.Error(), "mongo: existed document found in result") {
+		if strings.EqualFold(err.Error(), "ErrDocumentConflict") {
 			gc.AbortWithStatusJSON(409, gin.H{"error": gin.H{
-				"key": "!INTERNAL_SERVER",
-				"msg": err.Error(),
+				"key": "!DOCUMENT_CONFLICT",
+				"msg": "Existed document found in result",
 			}}); return;
 		} else {
 			// @logic abort request with a 500 if there's a unknown error from internal database
@@ -74,7 +74,7 @@ func (agc *ApGiftController) RegisterNewApGiftHoder(gc *gin.Context) {
 		}
 	}
 	
-	// return 200 ok to client
+	// return 200 OK to client
 	gc.JSON(200, gin.H{"error": nil})
 }
 

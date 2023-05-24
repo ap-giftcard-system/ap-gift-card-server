@@ -3,7 +3,10 @@ package dao
 import (
 	"ap-gift-card-server/models"
 	"context"
+	"errors"
+	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -27,7 +30,31 @@ func ApGiftDaoConstructor(ctx context.Context, mongoClient *mongo.Collection) Ap
 // 
 // @return error
 func (gdi *ApGiftDaoImpl) RegisterNewApGiftHoder(giftHolder *models.ApGiftHolder) (error) {
-	return nil
+	// prepare filter
+	filter := bson.D{{Key: "bar_code", Value: giftHolder.BarCode}}
+
+	// check if there's already a document matching `filter`
+	dbRes := gdi.mongoCollection.FindOne(gdi.ctx, filter)
+	
+	// @logic if dbRes.Err() == nil => a document already exists with given `giftHolder.BarCode` => 409 - CONFLICT
+	// @logic if dbRes.Err() == mongo.ErrNoDocuments => document with given `giftHolder.BarCode` is a valid new document => add document to database
+	// @logic else => uknown error occurs in internal database
+	if dbRes.Err() == nil {
+		return errors.New("ErrDocumentConflict")
+	} else if dbRes.Err() == mongo.ErrNoDocuments {
+		// prepare timing for the `giftHolder` document
+		giftHolder.CreatedAt = time.Now() // UTC
+		giftHolder.UpdatedAt = time.Now() // UTC
+
+		// add new `giftHolder` to database
+		if _, err := gdi.mongoCollection.InsertOne(gdi.ctx, giftHolder); err != nil {
+			return err
+		} else {
+			return nil
+		}
+	} else {
+		return dbRes.Err()
+	}
 }
 
 // @dev Update an existed ApGiftHolder in internal database
