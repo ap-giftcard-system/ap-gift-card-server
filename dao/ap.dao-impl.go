@@ -106,7 +106,19 @@ func (gdi *ApGiftDaoImpl) UpdateApGiftHolder(giftHolder *models.ApGiftHolder) (e
 // 
 // @return error
 func (gdi *ApGiftDaoImpl) GetAllApGiftHolders() (*[]models.ApGiftHolder, error) {
-	return nil, nil
+	// prepare apGiftHolders placeholder
+	apGiftHolders := &[]models.ApGiftHolder{}
+
+	// find all holders in internal database
+	cursor, err := gdi.mongoCollection.Find(gdi.ctx, bson.D{})
+	if err != nil {
+		return nil, err
+	}
+
+	// decode curosr into declared placeholder
+	err = cursor.All(gdi.ctx, apGiftHolders)
+
+	return apGiftHolders, err
 }
 
 // @dev Get a specific ApGiftHolder by params

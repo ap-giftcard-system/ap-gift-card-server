@@ -45,7 +45,7 @@ func (agc *ApGiftController) RegisterNewApGiftHoder(gc *gin.Context) {
 	// sanitize request's body
 	if err := common.SanitizeStruct(gc, validate, param); err != nil {return;}
 
-	// invoke dao.RegisterNewApGiftHoder
+	// invoke dao.RegisterNewApGiftHoder() API
 	if err := agc.ApGiftDao.RegisterNewApGiftHoder(param); err != nil {
 		// @logic abort request with a 409 if Gift Holder already exists
 		if strings.EqualFold(err.Error(), "ErrDocumentConflict") {
@@ -86,7 +86,7 @@ func (agc *ApGiftController) UpdateApGiftHolder(gc *gin.Context) {
 	// sanitize request's body
 	if err := common.SanitizeStruct(gc, validate, param); err != nil {return;}
 
-	// invoke dao.UpdateApGiftHolder
+	// invoke dao.UpdateApGiftHolder() API
 	if err := agc.ApGiftDao.UpdateApGiftHolder(param); err != nil {
 		// @logic abort request with a 404 if Gift Holder does not exist
 		if strings.EqualFold(err.Error(), "ErrNoDocuments") {
@@ -112,7 +112,16 @@ func (agc *ApGiftController) UpdateApGiftHolder(gc *gin.Context) {
 // 
 // @param gc *gin.Context
 func (agc *ApGiftController) GetAllApGiftHolders(gc *gin.Context) {
-	gc.JSON(200, "true")
+	// invoke dao.GetAllApGiftHolders() API
+	apGiftHolders, err := agc.ApGiftDao.GetAllApGiftHolders()
+	if err != nil {
+		gc.AbortWithStatusJSON(500, gin.H{"error": gin.H{
+			"key": "!INTERNAL_SERVER",
+			"msg": err.Error(),
+		}}); return;
+	}
+
+	gc.JSON(200, gin.H{"error": nil, "apGiftHolders": apGiftHolders})
 }
 
 // @route `GET/single?bar-code=?holder-name=?holder-phone=?holder-email=`
