@@ -118,8 +118,35 @@ func (gdi *ApGiftDaoImpl) UpdateApGiftHolder(giftHolder *models.ApGiftHolder) (e
 // @return *[]model.ApGiftHolder
 // 
 // @return error
-func (gdi *ApGiftDaoImpl) GetApGiftHolder(barCode, holderName, holderPhone, holderEmail string) (*models.ApGiftHolder, error) {
-	return nil, nil
+func (gdi *ApGiftDaoImpl) GetApGiftHolders(barCode, holderName, holderPhone, holderEmail string) (*[]models.ApGiftHolder, error) {
+	// prepare apGiftHolder placeholder
+	apGiftHolders := &[]models.ApGiftHolder{}
+
+	// prepare filter 
+	filter := bson.M{}
+	if barCode != "" {
+		filter["bar_code"] = barCode
+	}
+	if holderName != "" {
+		filter["holder_name"] = primitive.Regex{Pattern: "^" + holderName + "$", Options: "i"}
+	}
+	if holderPhone != "" {
+		filter["holder_phone"] = holderPhone
+	}
+	if holderEmail != "" {
+		filter["holder_email"] = primitive.Regex{Pattern: "^" + holderEmail + "$", Options: "i"}
+	}
+
+	// find documents matches filter
+	cursor, err := gdi.mongoCollection.Find(gdi.ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	// decode cursor to `apGiftHolders`
+	err = cursor.All(gdi.ctx, apGiftHolders)
+	
+	return apGiftHolders, err
 }
 
 // @dev Remove a specific ApGiftHolder

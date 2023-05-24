@@ -22,6 +22,6 @@ func ApGiftRouterConstructor(apGiftController *controllers.ApGiftController) *Ap
 func (agr *ApGiftRouter) ApRouter (rg *gin.RouterGroup) {
 	rg.POST("/register", agr.ApGiftController.RegisterNewApGiftHoder)
 	rg.PATCH("/update", agr.ApGiftController.UpdateApGiftHolder)
-	rg.GET("/single", agr.ApGiftController.GetApGiftHolder)
+	rg.GET("/find-gift-holders", agr.ApGiftController.GetApGiftHolder)
 	rg.DELETE("/delete", agr.ApGiftController.DeleteApGiftHolder)
 }

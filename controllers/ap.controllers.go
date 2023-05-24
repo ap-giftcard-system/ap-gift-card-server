@@ -103,17 +103,24 @@ func (agc *ApGiftController) UpdateApGiftHolder(gc *gin.Context) {
 		}
 	}
 
+	// return 200 OK to client
 	gc.JSON(200, gin.H{"error": nil})
 }
 
-// @route `GET/all`
+// @route `GET/find-gift-holders?barCode=&holderName=&holderPhone=&holderEmail=`
 // 
-// @dev Get a list of all ApGiftHolders in internal database
+// @dev Get a specific ApGiftHolder
 // 
 // @param gc *gin.Context
-func (agc *ApGiftController) GetAllApGiftHolders(gc *gin.Context) {
-	// invoke dao.GetAllApGiftHolders() API
-	apGiftHolders, err := agc.ApGiftDao.GetAllApGiftHolders()
+func (agc *ApGiftController) GetApGiftHolder(gc *gin.Context) {
+	// retrieve params from query
+	barCode := gc.Query("barCode")
+	holderName := gc.Query("holderName")
+	holderPhone := gc.Query("holderPhone")
+	holderEmail := gc.Query("holderEmail")
+
+	// invoke dao.GetApGiftHolder() API
+	apGiftHolder, err := agc.ApGiftDao.GetApGiftHolders(barCode, holderName, holderPhone, holderEmail)
 	if err != nil {
 		gc.AbortWithStatusJSON(500, gin.H{"error": gin.H{
 			"key": "!INTERNAL_SERVER",
@@ -121,16 +128,8 @@ func (agc *ApGiftController) GetAllApGiftHolders(gc *gin.Context) {
 		}}); return;
 	}
 
-	gc.JSON(200, gin.H{"error": nil, "apGiftHolders": apGiftHolders})
-}
-
-// @route `GET/single?bar-code=?holder-name=?holder-phone=?holder-email=`
-// 
-// @dev Get a specific ApGiftHolder
-// 
-// @param gc *gin.Context
-func (agc *ApGiftController) GetApGiftHolder(gc *gin.Context) {
-	gc.JSON(200, "true")
+	// return 200 OK to client
+	gc.JSON(200, gin.H{"error": nil, "apGiftHolder": apGiftHolder})
 }
 
 // @route `DELETE/delete?holder-id=`
@@ -139,5 +138,7 @@ func (agc *ApGiftController) GetApGiftHolder(gc *gin.Context) {
 // 
 // @param gc *gin.Context
 func (agc *ApGiftController) DeleteApGiftHolder(gc *gin.Context) {
+
+	// return 200 OK to client
 	gc.JSON(200, "true")
 }
