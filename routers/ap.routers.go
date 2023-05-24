@@ -1,10 +1,28 @@
 package routers
 
-import "github.com/gin-gonic/gin"
+import (
+	"ap-gift-card-server/controllers"
+
+	"github.com/gin-gonic/gin"
+)
+
+// @notice Root struct for other methods in router
+type ApGiftRouter struct {
+	ApGiftController *controllers.ApGiftController
+}
+
+// @dev Constructor
+func ApGiftRouterConstructor(apGiftController *controllers.ApGiftController) *ApGiftRouter {
+	return &ApGiftRouter{
+		ApGiftController: apGiftController,
+	}
+}
 
 // @dev Declares list of endpoints
-func ApRouter (rg *gin.RouterGroup) {
-	rg.GET("/ping", func(gc *gin.Context) {
-		gc.JSON(200, "pong")
-	})
+func (agr *ApGiftRouter) ApRouter (rg *gin.RouterGroup) {
+	rg.POST("/register", agr.ApGiftController.RegisterNewApGiftHoder)
+	rg.PUT("/update", agr.ApGiftController.UpdateApGiftHolder)
+	rg.GET("/all", agr.ApGiftController.GetAllApGiftHolders)
+	rg.GET("/single", agr.ApGiftController.GetApGiftHolder)
+	rg.DELETE("/delete", agr.ApGiftController.DeleteApGiftHolder)
 }
