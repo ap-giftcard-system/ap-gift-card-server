@@ -2,11 +2,13 @@ package common
 
 import (
 	"ap-gift-card-server/models"
+	"encoding/hex"
 	"errors"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"golang.org/x/crypto/sha3"
 )
 
 // @dev sanitize struct received from request's body
@@ -38,4 +40,17 @@ func SanitizeStruct( gc *gin.Context, validate *validator.Validate, giftHolder *
 	}
 
 	return nil
+}
+
+// @dev calculate a keccak256 hashing solution for admin credentials
+// 
+// @param input []byte
+// 
+// @return string
+func CalculateHash(input []byte) string {
+	hash := sha3.NewLegacyKeccak256()
+	hash.Write(input)
+	result := hash.Sum(nil)
+
+	return hex.EncodeToString(result)
 }

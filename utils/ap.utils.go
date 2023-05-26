@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"encoding/hex"
+	"ap-gift-card-server/common"
 	"log"
 	"os"
 	"strings"
@@ -10,7 +10,6 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"golang.org/x/crypto/sha3"
 )
 
 // @dev Loads environment variables
@@ -47,16 +46,14 @@ func ValidateAdminLogin(username, password string) (bool, string) {
 	// prepare real username & password
 	iUsername := os.Getenv("AP_ADMIN_USERNAME")
 	iPassword := os.Getenv("AP_ADMIN_PASSWORD")
-
+	
 	// prepare hash
-	hash := sha3.NewLegacyKeccak256()
-	hash.Write([]byte(iUsername + iPassword))
-	result := hash.Sum(nil)
+	credentialHash := common.CalculateHash([]byte(iUsername + iPassword))
 
 	// security checks
 	if strings.Compare(username, iUsername) != 0 || strings.Compare(password, iPassword) != 0 {
 		return false, ""
 	} else {
-		return true, hex.EncodeToString(result)
+		return true, credentialHash
 	}
 }
