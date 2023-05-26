@@ -24,7 +24,7 @@ func GenerateAccessToken(gc *gin.Context) {
 	// bind json post data to `param`
 	if err := gc.ShouldBindJSON(param); err != nil {
 		gc.AbortWithStatusJSON(400, gin.H{
-			"access-token": nil,
+			"accessToken": nil,
 			"error": gin.H{
 				"key": "!BAD_REQUEST",
 				"msg": err.Error(),
@@ -35,7 +35,7 @@ func GenerateAccessToken(gc *gin.Context) {
 	// validate struct
 	if err := validate.Struct(param); err != nil {
 		gc.AbortWithStatusJSON(400, gin.H{
-			"access-token": nil,
+			"accessToken": nil,
 			"error": gin.H{
 				"key": "!BAD_REQUEST",
 				"msg": err.Error(),
@@ -60,12 +60,12 @@ func GenerateAccessToken(gc *gin.Context) {
 	// Sign and get the complete encoded token as a string using the secret
 	accessToken, err := token.SignedString([]byte(os.Getenv("JWT_SECRET_KEY")))
 	if err != nil {
-		gc.AbortWithStatusJSON(500, gin.H{"access-token": nil, "error": gin.H{
+		gc.AbortWithStatusJSON(500, gin.H{"accessToken": nil, "error": gin.H{
 			"key": "!JWT_ISSUE",
 			"msg": "Unable to sign new jwt access token.",
 		}}); return;
 	}
 
 	// return 200 OK to client
-	gc.JSON(200, gin.H{"access-token": accessToken, "error": nil})
+	gc.JSON(200, gin.H{"accessToken": accessToken, "error": nil})
 }
