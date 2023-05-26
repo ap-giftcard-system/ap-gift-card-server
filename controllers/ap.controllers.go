@@ -43,7 +43,7 @@ func (agc *ApGiftController) RegisterNewApGiftHoder(gc *gin.Context) {
 	}
 
 	// sanitize request's body
-	if err := common.SanitizeStruct(gc, validate, param); err != nil {return;}
+	if err := common.SanitizeStruct(gc, validate, param); err != nil {return}
 
 	// invoke dao.RegisterNewApGiftHoder() API
 	if err := agc.ApGiftDao.RegisterNewApGiftHoder(param); err != nil {
