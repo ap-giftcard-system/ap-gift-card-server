@@ -1,13 +1,16 @@
 package utils
 
 import (
+	"encoding/hex"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"golang.org/x/crypto/sha3"
 )
 
 // @dev Loads environment variables
@@ -29,4 +32,31 @@ func SetupCorsConfig() gin.HandlerFunc {
 		AllowCredentials: 	true,
 		MaxAge: 			12*time.Hour,
 	})
+}
+
+// @dev Security check on admin login
+// 
+// @param username string
+// 
+// @param password string
+// 
+// @return ok bool
+// 
+// @return hash string - keccak256 hex string of the iUsername and iPassword
+func ValidateAdminLogin(username, password string) (bool, string) {
+	// prepare real username & password
+	iUsername := os.Getenv("AP_ADMIN_USERNAME")
+	iPassword := os.Getenv("AP_ADMIN_PASSWORD")
+
+	// prepare hash
+	hash := sha3.NewLegacyKeccak256()
+	hash.Write([]byte(iUsername + iPassword))
+	result := hash.Sum(nil)
+
+	// security checks
+	if strings.Compare(username, iUsername) != 0 || strings.Compare(password, iPassword) != 0 {
+		return false, ""
+	} else {
+		return true, hex.EncodeToString(result)
+	}
 }
