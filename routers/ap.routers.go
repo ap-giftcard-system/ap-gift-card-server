@@ -18,10 +18,15 @@ func ApGiftRouterConstructor(apGiftController *controllers.ApGiftController) *Ap
 	}
 }
 
-// @dev Declares list of endpoints
+// @dev Declares list of gift holder endpoints
 func (agr *ApGiftRouter) ApRouter (rg *gin.RouterGroup) {
 	rg.POST("/register", agr.ApGiftController.RegisterNewApGiftHoder)
 	rg.PATCH("/update", agr.ApGiftController.UpdateApGiftHolder)
 	rg.GET("/find-gift-holders", agr.ApGiftController.GetApGiftHolder)
 	rg.DELETE("/delete", agr.ApGiftController.DeleteApGiftHolder)
+}
+
+// @dev Declares auth endpoint
+func AuthRouter (rg *gin.RouterGroup) {
+	rg.POST("/generate-access-token", controllers.GenerateAccessToken)
 }
