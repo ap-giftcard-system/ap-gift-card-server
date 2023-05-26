@@ -65,9 +65,11 @@ func main() {
 
   	// init basePath
 	apGiftBasePath := server.Group("/v1/ap/gift/holder")
+	apAuthBasePath := server.Group("/v1/ap/auth/")
 
 	// init Handler
 	agr.ApRouter(apGiftBasePath)
+	routers.AuthRouter(apAuthBasePath)
 
 	// run gin server engine
 	if (os.Getenv("GIN_MODE") != "release") {
