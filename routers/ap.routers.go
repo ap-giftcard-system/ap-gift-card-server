@@ -2,6 +2,7 @@ package routers
 
 import (
 	"ap-gift-card-server/controllers"
+	"ap-gift-card-server/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,10 +21,10 @@ func ApGiftRouterConstructor(apGiftController *controllers.ApGiftController) *Ap
 
 // @dev Declares list of gift holder endpoints
 func (agr *ApGiftRouter) ApRouter (rg *gin.RouterGroup) {
-	rg.POST("/register", agr.ApGiftController.RegisterNewApGiftHoder)
-	rg.PATCH("/update", agr.ApGiftController.UpdateApGiftHolder)
-	rg.GET("/find-gift-holders", agr.ApGiftController.GetApGiftHolder)
-	rg.DELETE("/delete", agr.ApGiftController.DeleteApGiftHolder)
+	rg.POST("/register", middleware.Authenticate(), agr.ApGiftController.RegisterNewApGiftHoder)
+	rg.PATCH("/update", middleware.Authenticate(), agr.ApGiftController.UpdateApGiftHolder)
+	rg.GET("/find-gift-holders", middleware.Authenticate(), agr.ApGiftController.GetApGiftHolder)
+	rg.DELETE("/delete", middleware.Authenticate(), agr.ApGiftController.DeleteApGiftHolder)
 }
 
 // @dev Declares auth endpoint
