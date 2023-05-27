@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"ap-gift-card-server/utils"
-	"log"
 	"os"
 	"time"
 
@@ -30,7 +29,6 @@ func GenerateAccessToken(gc *gin.Context) {
 				"msg": err.Error(),
 		}}); return;
 	}
-	log.Println(param)
 
 	// validate struct
 	if err := validate.Struct(param); err != nil {
@@ -54,7 +52,7 @@ func GenerateAccessToken(gc *gin.Context) {
 	// Create a new jwt token object
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"adminCredentialsHash": hash,
-		"exp": time.Now().Add(time.Hour).Unix(),
+		"exp": time.Now().Add(24*time.Hour).Unix(),
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
