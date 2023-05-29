@@ -77,7 +77,7 @@ func (agc *ApGiftController) UpdateApGiftHolder(gc *gin.Context) {
 
 	// bind json post data to `param`
 	if err := gc.ShouldBindJSON(param); err != nil {
-		gc.AbortWithStatusJSON(400, gin.H{"error": gin.H{
+		gc.AbortWithStatusJSON(400, gin.H{"updatedApGiftHolder": nil, "error": gin.H{
 			"key": "!BAD_REQUEST",
 			"msg": err.Error(),
 		}}); return;
@@ -87,16 +87,17 @@ func (agc *ApGiftController) UpdateApGiftHolder(gc *gin.Context) {
 	if err := common.SanitizeStruct(gc, validate, param); err != nil {return;}
 
 	// invoke dao.UpdateApGiftHolder() API
-	if err := agc.ApGiftDao.UpdateApGiftHolder(param); err != nil {
+	updatedApGiftHolder, err := agc.ApGiftDao.UpdateApGiftHolder(param); 
+	if err != nil {
 		// @logic abort request with a 404 if Gift Holder does not exist
 		if strings.EqualFold(err.Error(), "ErrNoDocuments") {
-			gc.AbortWithStatusJSON(404, gin.H{"error": gin.H{
+			gc.AbortWithStatusJSON(404, gin.H{"updatedApGiftHolder": nil, "error": gin.H{
 				"key": "!DOCUMENT_NOT_FOUND",
 				"msg": "No document found in result",
 			}}); return;
 		} else {
 			// @logic abort request with a 500 if there's a unknown error from internal database
-			gc.AbortWithStatusJSON(500, gin.H{"error": gin.H{
+			gc.AbortWithStatusJSON(500, gin.H{"updatedApGiftHolder": nil, "error": gin.H{
 				"key": "!INTERNAL_SERVER",
 				"msg": err.Error(),
 			}}); return;
@@ -104,7 +105,7 @@ func (agc *ApGiftController) UpdateApGiftHolder(gc *gin.Context) {
 	}
 
 	// return 200 OK to client
-	gc.JSON(200, gin.H{"error": nil})
+	gc.JSON(200, gin.H{"updatedApGiftHolder": updatedApGiftHolder, "error": nil})
 }
 
 // @route `GET/find-gift-holders?barCode=&holderName=&holderPhone=&holderEmail=`

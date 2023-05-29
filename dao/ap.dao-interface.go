@@ -16,8 +16,11 @@ type ApGiftDao interface {
 	// 
 	// @param giftHolder *models.ApGiftHolder
 	// 
+	// 
+	// @return updatedGiftHolder
+	// 
 	// @return error
-	UpdateApGiftHolder(giftHolder *models.ApGiftHolder) (error)
+	UpdateApGiftHolder(giftHolder *models.ApGiftHolder) (*models.ApGiftHolder, error)
 
 	// @notice Get a list of ApGiftHolders by params
 	// 

@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // @notice Root struct for other methods in dao-impl
@@ -66,12 +67,18 @@ func (gdi *ApGiftDaoImpl) RegisterNewApGiftHoder(giftHolder *models.ApGiftHolder
 // @param giftHolder *models.ApGiftHolder
 // 
 // @return error
-func (gdi *ApGiftDaoImpl) UpdateApGiftHolder(giftHolder *models.ApGiftHolder) (error) {
+func (gdi *ApGiftDaoImpl) UpdateApGiftHolder(giftHolder *models.ApGiftHolder) (*models.ApGiftHolder, error) {
+	// prepare apUpdatedGiftHolder
+	apUpdatedGiftHolder := &models.ApGiftHolder{}
+
 	// prepare filter
 	filter := bson.D{{Key: "_id", Value: giftHolder.GiftHolderID}}
 
 	// find the document matching `filter`
 	dbRes := gdi.mongoCollection.FindOne(gdi.ctx, filter)
+
+	// Set the options to return the updated document
+	mongoOptions := options.FindOneAndUpdate().SetReturnDocument(options.After)
 
 	// @logic if dbRes.Err() == nil => document found => update document
 	// @logic if dbRes.Err() == mongo.ErrNoDocuments => document not found => 404 !OK
@@ -88,15 +95,15 @@ func (gdi *ApGiftDaoImpl) UpdateApGiftHolder(giftHolder *models.ApGiftHolder) (e
 		}
 
 		// update document
-		if _, err := gdi.mongoCollection.UpdateOne(gdi.ctx, filter, update); err != nil {
-			return errors.New("cannot update document")
+		if err := gdi.mongoCollection.FindOneAndUpdate(gdi.ctx, filter, update, mongoOptions).Decode(apUpdatedGiftHolder); err != nil {
+			return nil, errors.New("cannot update document")
 		} else {
-			return nil
+			return apUpdatedGiftHolder, nil
 		}
 	} else if dbRes.Err() == mongo.ErrNoDocuments {
-		return errors.New("ErrNoDocuments")
+		return nil, errors.New("ErrNoDocuments")
 	} else {
-		return dbRes.Err()
+		return nil, dbRes.Err()
 	}
 }
 
@@ -137,8 +144,11 @@ func (gdi *ApGiftDaoImpl) GetApGiftHolders(barCode, holderName, holderPhone, hol
 		filter["holder_email"] = primitive.Regex{Pattern: "^" + holderEmail + "$", Options: "i"}
 	}
 
+	// sort documents in ascending order of "created_at" field
+	mongoOptions := options.Find().SetSort(bson.D{{Key: "created_at", Value: -1}})
+
 	// find documents matches filter
-	cursor, err := gdi.mongoCollection.Find(gdi.ctx, filter)
+	cursor, err := gdi.mongoCollection.Find(gdi.ctx, filter, mongoOptions)
 	if err != nil {
 		return nil, err
 	}
