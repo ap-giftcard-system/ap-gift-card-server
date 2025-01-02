@@ -2,8 +2,10 @@ package dao
 
 import (
 	"ap-gift-card-server/models"
+	"ap-gift-card-server/notifications"
 	"context"
 	"errors"
+	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -54,9 +56,18 @@ func (gdi *ApGiftDaoImpl) RegisterNewApGiftHoder(giftHolder *models.ApGiftHolder
 		// add new `giftHolder` to database
 		if _, err := gdi.mongoCollection.InsertOne(gdi.ctx, giftHolder); err != nil {
 			return err
-		} else {
-			return nil
 		}
+
+		// send SMS notification
+		if giftHolder.HolderEmail != "" {
+			err := notifications.NotifyNewGift(giftHolder)
+			if err != nil {
+				log.Printf("Failed to send email to %s: %v", giftHolder.HolderEmail, err)
+			}
+		}
+
+		return nil
+
 	} else {
 		return dbRes.Err()
 	}
