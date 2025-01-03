@@ -58,9 +58,9 @@ func (gdi *ApGiftDaoImpl) RegisterNewApGiftHoder(giftHolder *models.ApGiftHolder
 			return err
 		}
 
-		// send SMS notification
+		// send email notification
 		if giftHolder.HolderEmail != "" {
-			err := notifications.NotifyNewGift(giftHolder)
+			err := notifications.NotifyGiftCreated(giftHolder)
 			if err != nil {
 				log.Printf("Failed to send email to %s: %v", giftHolder.HolderEmail, err)
 			}
@@ -87,6 +87,17 @@ func (gdi *ApGiftDaoImpl) UpdateApGiftHolder(giftHolder *models.ApGiftHolder) (*
 
 	// find the document matching `filter`
 	dbRes := gdi.mongoCollection.FindOne(gdi.ctx, filter)
+	
+	// Decode dbRes into a models.ApGiftHolder
+	originalGiftHolder := &models.ApGiftHolder{}
+	if err := dbRes.Decode(originalGiftHolder); err != nil {
+		if err == mongo.ErrNoDocuments {
+			log.Println("No document found with the given ID.")
+			return nil, errors.New("ErrNoDocuments")
+		}
+		log.Printf("Error decoding document: %v\n", err)
+		return nil, err
+	}
 
 	// Set the options to return the updated document
 	mongoOptions := options.FindOneAndUpdate().SetReturnDocument(options.After)
@@ -109,6 +120,14 @@ func (gdi *ApGiftDaoImpl) UpdateApGiftHolder(giftHolder *models.ApGiftHolder) (*
 		if err := gdi.mongoCollection.FindOneAndUpdate(gdi.ctx, filter, update, mongoOptions).Decode(apUpdatedGiftHolder); err != nil {
 			return nil, errors.New("cannot update document")
 		} else {
+			// send email notification
+			if giftHolder.HolderEmail != "" {
+				err := notifications.NotifyGiftUpdated(giftHolder, originalGiftHolder)
+				if err != nil {
+					log.Printf("Failed to send email to %s: %v", giftHolder.HolderEmail, err)
+				}
+			}
+
 			return apUpdatedGiftHolder, nil
 		}
 	} else if dbRes.Err() == mongo.ErrNoDocuments {
